@@ -8,6 +8,7 @@ var visitSchema = new mongoose.Schema(
     lastName: String,
     email: String,
     phone: String,
+    photo: String,
     visitType: String,
     host: {
       name: String,
@@ -40,7 +41,7 @@ function getVisits(inputData, callback) {
 
 function getVisitById(id, callback) {
   visit.findById(id, function (err, data) {
-    if (err) throw err;
+    if (err) callback({ error: err });
     console.log("data ---", data);
     return callback(data);
   });

@@ -9,7 +9,7 @@ const createVisitor = Joi.object({
       tlds: { allow: ["com", "net"] },
     })
     .required(),
-  phone: Joi.string().min(5).max(10).required(),
+  phone: Joi.string().min(5).max(13).required(),
   visitType: Joi.string().valid("personal", "business"),
   photo: Joi.string().required(),
   host: Joi.object().keys({
