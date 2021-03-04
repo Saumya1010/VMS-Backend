@@ -1,6 +1,6 @@
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(
-  "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"
+//   "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"
 );
 
 const sendMail = ({
