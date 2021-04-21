@@ -1,5 +1,6 @@
 const express = require("express");
 const moment = require("moment");
+require("dotenv").config();
 var cors = require("cors");
 
 require("./model/database");
@@ -20,17 +21,11 @@ app.get("/", (req, res) => {
 
 app.post("/visit", (req, res) => {
   try {
-    console.log("req: ", req.body);
-
     const { error, value } = createVisitor.validate(req.body, {
       abortEarly: false,
     });
     if (error) return res.status(400).send({ error: error.details });
-    console.log("value", value);
     addVisit(value, function (visit) {
-      console.log("visitor : ", visit);
-      console.log("-------->>>>>>>", visit._id);
-      // var d = new Date(visit.createdAt);
       sendMail({
         to: value.host.email,
         subject: "Visitor Notification",
@@ -51,7 +46,6 @@ app.post("/visit", (req, res) => {
 
 app.get("/visits", (req, res) => {
   getVisits(null, function (visits) {
-    console.log("visitor : ", visits);
     res.send({ visits });
   });
 });
@@ -62,27 +56,23 @@ app.get("/visits/:id", (req, res) => {
     if (visit.error) {
       res.status(400).send({ error: visit.error });
     }
-    console.log("visitor : ", visit);
     res.send({ visit });
   });
 });
 
-// app.post("/testmail", (req, res) => {
-//   const { body } = req;
+app.post("/hostreply", (req, res) => {
+  const visitId = req.body.visitId;
+  const hostReply = req.body.hostReply;
 
-//   res.send({
-//     response: sendMail({
-//       ...body,
-//       html: hostMail({
-//         name: "Saurin",
-//         location: "LDRP Campus, Gandhinagar",
-//         date: "1st March, 2021",
-//         time: "2:00 p.m.",
-//         link: "http://localhost:3001/visits/603cdce5c3124a1cacff5d70",
-//       }),
-//     }),
-//   });
-// });
+  getVisitById(visitId, async function (visit) {
+    if (visit.error) {
+      res.status(400).send({ error: visit.error });
+    }
+    visit.host = { ...visit.host, hostReply };
+    await visit.save();
+    res.send({ success: true });
+  });
+});
 
 module.exports = router;
 

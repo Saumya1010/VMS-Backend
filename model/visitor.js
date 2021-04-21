@@ -13,6 +13,7 @@ var visitSchema = new mongoose.Schema(
     host: {
       name: String,
       email: String,
+      hostReply: String,
     },
   },
   {
