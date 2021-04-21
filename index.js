@@ -46,6 +46,7 @@ app.post("/visit", (req, res) => {
 
 app.get("/visits", (req, res) => {
   getVisits(null, function (visits) {
+    // testing
     res.send({ visits });
   });
 });
